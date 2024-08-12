@@ -4,36 +4,31 @@
 import tiles from './tiles.png';
 
 // import module
-import * as LittleJS from 'littlejsengine';
+import * as ls from 'littlejsengine';
 
-///////////////////////////////////////////////////////////////////////////////
 function gameInit()
 {
+  
 }
 
-///////////////////////////////////////////////////////////////////////////////
 function gameUpdate()
 {
 
 }
 
-///////////////////////////////////////////////////////////////////////////////
 function gameUpdatePost()
 {
 
 }
 
-///////////////////////////////////////////////////////////////////////////////
 function gameRender()
 {
+  
 }
 
-///////////////////////////////////////////////////////////////////////////////
 function gameRenderPost()
 {
-  LittleJS.drawTextScreen('Hello World!', LittleJS.mainCanvasSize.scale(.5), 80);
+  ls.drawTextScreen('Hello Typescript!', ls.mainCanvasSize.scale(.5), 80);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// Startup LittleJS Engine
-LittleJS.engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, [tiles]);
+ls.engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, [tiles]);
