@@ -1,6 +1,6 @@
 declare module "littlejsengine" {
     /**
-     * LittleJS - The Tiny JavaScript Game Engine That Can!
+     * LittleJS - The Tiny Fast JavaScript Game Engine
      * MIT License - Copyright 2021 Frank Force
      *
      * Engine Features
@@ -28,7 +28,7 @@ declare module "littlejsengine" {
      *  @default
      *  @memberof Engine */
     export const engineVersion: string;
-    /** Frames per second to update objects
+    /** Frames per second to update
      *  @type {Number}
      *  @default
      *  @memberof Engine */
@@ -46,7 +46,7 @@ declare module "littlejsengine" {
      *  @type {Number}
      *  @memberof Engine */
     export let frame: number;
-    /** Current engine time since start in seconds, derived from frame
+    /** Current engine time since start in seconds
      *  @type {Number}
      *  @memberof Engine */
     export let time: number;
@@ -56,19 +56,19 @@ declare module "littlejsengine" {
     export let timeReal: number;
     /** Is the game paused? Causes time and objects to not be updated
      *  @type {Boolean}
-     *  @default 0
+     *  @default false
      *  @memberof Engine */
     export let paused: boolean;
     /** Set if game is paused
-     *  @param {Boolean} paused
+     *  @param {Boolean} isPaused
      *  @memberof Engine */
-    export function setPaused(_paused: any): void;
-    /** Start up LittleJS engine with your callback functions
-     *  @param {Function} gameInit        - Called once after the engine starts up, setup the game
-     *  @param {Function} gameUpdate      - Called every frame at 60 frames per second, handle input and update the game state
-     *  @param {Function} gameUpdatePost  - Called after physics and objects are updated, setup camera and prepare for render
-     *  @param {Function} gameRender      - Called before objects are rendered, draw any background effects that appear behind objects
-     *  @param {Function} gameRenderPost  - Called after objects are rendered, draw effects or hud that appear above all objects
+    export function setPaused(isPaused: boolean): void;
+    /** Startup LittleJS engine with your callback functions
+     *  @param {Function} gameInit       - Called once after the engine starts up, setup the game
+     *  @param {Function} gameUpdate     - Called every frame at 60 frames per second, handle input and update the game state
+     *  @param {Function} gameUpdatePost - Called after physics and objects are updated, setup camera and prepare for render
+     *  @param {Function} gameRender     - Called before objects are rendered, draw any background effects that appear behind objects
+     *  @param {Function} gameRenderPost - Called after objects are rendered, draw effects or hud that appear above all objects
      *  @param {Array} [imageSources=['tiles.png']] - Image to load
      *  @memberof Engine */
     export function engineInit(gameInit: Function, gameUpdate: Function, gameUpdatePost: Function, gameRender: Function, gameRenderPost: Function, imageSources?: any[]): void;
@@ -80,11 +80,11 @@ declare module "littlejsengine" {
     export function engineObjectsDestroy(): void;
     /** Triggers a callback for each object within a given area
      *  @param {Vector2} [pos]                 - Center of test area
-     *  @param {Number} [size]                 - Radius of circle if float, rectangle size if Vector2
+     *  @param {Number|Vector2} [size]         - Radius of circle if float, rectangle size if Vector2
      *  @param {Function} [callbackFunction]   - Calls this function on every object that passes the test
      *  @param {Array} [objects=engineObjects] - List of objects to check
      *  @memberof Engine */
-    export function engineObjectsCallback(pos?: Vector2, size?: number, callbackFunction?: Function, objects?: any[]): void;
+    export function engineObjectsCallback(pos?: Vector2, size?: number | Vector2, callbackFunction?: Function, objects?: any[]): void;
     /**
      * LittleJS Debug System
      * - Press Esc to show debug overlay with mouse pick
@@ -99,64 +99,69 @@ declare module "littlejsengine" {
      *  @default
      *  @memberof Debug */
     export const debug: boolean;
+    /** True if the debug overlay is active, always false in release builds
+     *  @type {Boolean}
+     *  @default
+     *  @memberof Debug */
+    export let debugOverlay: boolean;
     /** True if watermark with FPS should be shown, false in release builds
      *  @type {Boolean}
      *  @default
      *  @memberof Debug */
     export let showWatermark: boolean;
-    /** Asserts if the experssion is false, does not do anything in release builds
-     *  @param {Boolean} assertion
-     *  @param {Object}  output
+    /** Asserts if the expression is false, does not do anything in release builds
+     *  @param {Boolean} assert
+     *  @param {Object} [output]
      *  @memberof Debug */
-    export function ASSERT(...assert: any[]): void;
+    export function ASSERT(assert: boolean, output?: any): void;
     /** Draw a debug rectangle in world space
      *  @param {Vector2} pos
      *  @param {Vector2} [size=Vector2()]
-     *  @param {String}  [color='#fff']
-     *  @param {Number}  [time=0]
-     *  @param {Number}  [angle=0]
-     *  @param {Boolean} [fill=false]
+     *  @param {String}  [color]
+     *  @param {Number}  [time]
+     *  @param {Number}  [angle]
+     *  @param {Boolean} [fill]
      *  @memberof Debug */
     export function debugRect(pos: Vector2, size?: Vector2, color?: string, time?: number, angle?: number, fill?: boolean): void;
     /** Draw a debug circle in world space
      *  @param {Vector2} pos
-     *  @param {Number}  [radius=0]
-     *  @param {String}  [color='#fff']
-     *  @param {Number}  [time=0]
-     *  @param {Boolean} [fill=false]
+     *  @param {Number}  [radius]
+     *  @param {String}  [color]
+     *  @param {Number}  [time]
+     *  @param {Boolean} [fill]
      *  @memberof Debug */
     export function debugCircle(pos: Vector2, radius?: number, color?: string, time?: number, fill?: boolean): void;
     /** Draw a debug point in world space
      *  @param {Vector2} pos
-     *  @param {String}  [color='#fff']
-     *  @param {Number}  [time=0]
-     *  @param {Number}  [angle=0]
+     *  @param {String}  [color]
+     *  @param {Number}  [time]
+     *  @param {Number}  [angle]
      *  @memberof Debug */
     export function debugPoint(pos: Vector2, color?: string, time?: number, angle?: number): void;
     /** Draw a debug line in world space
      *  @param {Vector2} posA
      *  @param {Vector2} posB
-     *  @param {String}  [color='#fff']
-     *  @param {Number}  [thickness=.1]
-     *  @param {Number}  [time=0]
+     *  @param {String}  [color]
+     *  @param {Number}  [thickness]
+     *  @param {Number}  [time]
      *  @memberof Debug */
     export function debugLine(posA: Vector2, posB: Vector2, color?: string, thickness?: number, time?: number): void;
     /** Draw a debug axis aligned bounding box in world space
-     *  @param {Vector2} posA
-     *  @param {Vector2} sizeA
-     *  @param {Vector2} posB
-     *  @param {Vector2} sizeB
-     *  @param {String}  [color='#fff']
+     *  @param {Vector2} pA - position A
+     *  @param {Vector2} sA - size A
+     *  @param {Vector2} pB - position B
+     *  @param {Vector2} sB - size B
+     *  @param {String}  [color]
      *  @memberof Debug */
-    export function debugAABB(pA: any, sA: any, pB: any, sB: any, color?: string): void;
+    export function debugAABB(pA: Vector2, sA: Vector2, pB: Vector2, sB: Vector2, color?: string): void;
     /** Draw a debug axis aligned bounding box in world space
      *  @param {String}  text
      *  @param {Vector2} pos
-     *  @param {Number}  [size=1]
-     *  @param {String}  [color='#fff']
-     *  @param {Number}  [time=0]
-     *  @param {Number}  [angle=0]
-     *  @param {String}  [font='monospace']
+     *  @param {Number}  [size]
+     *  @param {String}  [color]
+     *  @param {Number}  [time]
+     *  @param {Number}  [angle]
+     *  @param {String}  [font]
      *  @memberof Debug */
     export function debugText(text: string, pos: Vector2, size?: number, color?: string, time?: number, angle?: number, font?: string): void;
     /** Clear all debug primitives in the list
@@ -165,7 +170,7 @@ declare module "littlejsengine" {
     /** Save a canvas to disk
      *  @param {HTMLCanvasElement} canvas
      *  @param {String}            [filename]
-     *  @param {String}            [type='image/png']
+     *  @param {String}            [type]
      *  @memberof Debug */
     export function debugSaveCanvas(canvas: HTMLCanvasElement, filename?: string, type?: string): void;
     /**
@@ -224,7 +229,7 @@ declare module "littlejsengine" {
      *  @default
      *  @memberof Settings */
     export let enablePhysicsSolver: boolean;
-    /** Default object mass for collison calcuations (how heavy objects are)
+    /** Default object mass for collision calcuations (how heavy objects are)
      *  @type {Number}
      *  @default
      *  @memberof Settings */
@@ -241,7 +246,7 @@ declare module "littlejsengine" {
     export let objectDefaultAngleDamping: number;
     /** How much to bounce when a collision occurs (0-1)
      *  @type {Number}
-     *  @default 0
+     *  @default
      *  @memberof Settings */
     export let objectDefaultElasticity: number;
     /** How much to slow when touching (0-1)
@@ -256,7 +261,7 @@ declare module "littlejsengine" {
     export let objectMaxSpeed: number;
     /** How much gravity to apply to objects along the Y axis, negative is down
      *  @type {Number}
-     *  @default 0
+     *  @default
      *  @memberof Settings */
     export let gravity: number;
     /** Scales emit rate of particles, useful for low graphics mode (0 disables particle emitters)
@@ -293,7 +298,7 @@ declare module "littlejsengine" {
      *  - Supports left analog stick, 4 face buttons and start button (button 9)
      *  - Must be set by end of gameInit to be activated
      *  @type {Boolean}
-     *  @default 0
+     *  @default
      *  @memberof Settings */
     export let touchGamepadEnable: boolean;
     /** True if touch gamepad should be analog stick or false to use if 8 way dpad
@@ -301,7 +306,7 @@ declare module "littlejsengine" {
      *  @default
      *  @memberof Settings */
     export let touchGamepadAnalog: boolean;
-    /** Size of virutal gamepad for touch devices in pixels
+    /** Size of virtual gamepad for touch devices in pixels
      *  @type {Number}
      *  @default
      *  @memberof Settings */
@@ -409,13 +414,13 @@ declare module "littlejsengine" {
      *  @memberof Settings */
     export function setObjectDefaultMass(mass: number): void;
     /** Set how much to slow velocity by each frame
-     *  @param {Number} damping
+     *  @param {Number} damp
      *  @memberof Settings */
-    export function setObjectDefaultDamping(damp: any): void;
+    export function setObjectDefaultDamping(damp: number): void;
     /** Set how much to slow angular velocity each frame
-     *  @param {Number} damping
+     *  @param {Number} damp
      *  @memberof Settings */
-    export function setObjectDefaultAngleDamping(damp: any): void;
+    export function setObjectDefaultAngleDamping(damp: number): void;
     /** Set how much to bounce when a collision occur
      *  @param {Number} elasticity
      *  @memberof Settings */
@@ -429,9 +434,9 @@ declare module "littlejsengine" {
      *  @memberof Settings */
     export function setObjectMaxSpeed(speed: number): void;
     /** Set how much gravity to apply to objects along the Y axis
-     *  @param {Number} gravity
+     *  @param {Number} newGravity
      *  @memberof Settings */
-    export function setGravity(g: any): void;
+    export function setGravity(newGravity: number): void;
     /** Set to scales emit rate of particles
      *  @param {Number} scale
      *  @memberof Settings */
@@ -509,9 +514,9 @@ declare module "littlejsengine" {
      *  @memberof Debug */
     export function setShowWatermark(show: boolean): void;
     /** Set key code used to toggle debug mode, Esc by default
-     *  @param {Number} key
+     *  @param {String} key
      *  @memberof Debug */
-    export function setDebugKey(key: number): void;
+    export function setDebugKey(key: string): void;
     /**
      * LittleJS Utility Classes and Functions
      * - General purpose math library
@@ -543,21 +548,21 @@ declare module "littlejsengine" {
      *  @return {Number}
      *  @memberof Utilities */
     export function max(valueA: number, valueB: number): number;
-    /** Returns the sign of value passed in (also returns 1 if 0)
+    /** Returns the sign of value passed in
      *  @param {Number} value
      *  @return {Number}
      *  @memberof Utilities */
     export function sign(value: number): number;
     /** Returns first parm modulo the second param, but adjusted so negative numbers work as expected
      *  @param {Number} dividend
-     *  @param {Number} [divisor=1]
+     *  @param {Number} [divisor]
      *  @return {Number}
      *  @memberof Utilities */
     export function mod(dividend: number, divisor?: number): number;
     /** Clamps the value beween max and min
      *  @param {Number} value
-     *  @param {Number} [min=0]
-     *  @param {Number} [max=1]
+     *  @param {Number} [min]
+     *  @param {Number} [max]
      *  @return {Number}
      *  @memberof Utilities */
     export function clamp(value: number, min?: number, max?: number): number;
@@ -571,15 +576,15 @@ declare module "littlejsengine" {
     /** Returns signed wrapped distance between the two values passed in
      *  @param {Number} valueA
      *  @param {Number} valueB
-     *  @param {Number} [wrapSize=1]
+     *  @param {Number} [wrapSize]
      *  @returns {Number}
      *  @memberof Utilities */
     export function distanceWrap(valueA: number, valueB: number, wrapSize?: number): number;
-    /** Linearly interpolates between values passed in with wrappping
+    /** Linearly interpolates between values passed in with wrapping
      *  @param {Number} percent
      *  @param {Number} valueA
      *  @param {Number} valueB
-     *  @param {Number} [wrapSize=1]
+     *  @param {Number} [wrapSize]
      *  @returns {Number}
      *  @memberof Utilities */
     export function lerpWrap(percent: number, valueA: number, valueB: number, wrapSize?: number): number;
@@ -589,7 +594,7 @@ declare module "littlejsengine" {
      *  @returns {Number}
      *  @memberof Utilities */
     export function distanceAngle(angleA: number, angleB: number): number;
-    /** Linearly interpolates between the angles passed in with wrappping
+    /** Linearly interpolates between the angles passed in with wrapping
      *  @param {Number} percent
      *  @param {Number} angleA
      *  @param {Number} angleB
@@ -614,18 +619,18 @@ declare module "littlejsengine" {
      *  @memberof Utilities */
     export function nearestPowerOfTwo(value: number): number;
     /** Returns true if two axis aligned bounding boxes are overlapping
-     *  @param {Vector2} pointA  - Center of box A
-     *  @param {Vector2} sizeA   - Size of box A
-     *  @param {Vector2} pointB  - Center of box B
-     *  @param {Vector2} sizeB   - Size of box B
-     *  @return {Boolean}        - True if overlapping
+     *  @param {Vector2} pointA         - Center of box A
+     *  @param {Vector2} sizeA          - Size of box A
+     *  @param {Vector2} pointB         - Center of box B
+     *  @param {Vector2} [sizeB=(0,0)]  - Size of box B, a point if undefined
+     *  @return {Boolean}               - True if overlapping
      *  @memberof Utilities */
-    export function isOverlapping(pointA: Vector2, sizeA: Vector2, pointB: Vector2, sizeB: Vector2): boolean;
+    export function isOverlapping(pointA: Vector2, sizeA: Vector2, pointB: Vector2, sizeB?: Vector2): boolean;
     /** Returns an oscillating wave between 0 and amplitude with frequency of 1 Hz by default
-     *  @param {Number} [frequency=1] - Frequency of the wave in Hz
-     *  @param {Number} [amplitude=1] - Amplitude (max height) of the wave
-     *  @param {Number} [t=time]      - Value to use for time of the wave
-     *  @return {Number}              - Value waving between 0 and amplitude
+     *  @param {Number} [frequency] - Frequency of the wave in Hz
+     *  @param {Number} [amplitude] - Amplitude (max height) of the wave
+     *  @param {Number} [t=time]    - Value to use for time of the wave
+     *  @return {Number}            - Value waving between 0 and amplitude
      *  @memberof Utilities */
     export function wave(frequency?: number, amplitude?: number, t?: number): number;
     /** Formats seconds to mm:ss style for display purposes
@@ -636,14 +641,14 @@ declare module "littlejsengine" {
     /** Random global functions
      *  @namespace Random */
     /** Returns a random value between the two values passed in
-     *  @param {Number} [valueA=1]
-     *  @param {Number} [valueB=0]
+     *  @param {Number} [valueA]
+     *  @param {Number} [valueB]
      *  @return {Number}
      *  @memberof Random */
     export function rand(valueA?: number, valueB?: number): number;
     /** Returns a floored random value the two values passed in
      *  @param {Number} valueA
-     *  @param {Number} [valueB=0]
+     *  @param {Number} [valueB]
      *  @return {Number}
      *  @memberof Random */
     export function randInt(valueA: number, valueB?: number): number;
@@ -652,19 +657,19 @@ declare module "littlejsengine" {
      *  @memberof Random */
     export function randSign(): number;
     /** Returns a random Vector2 within a circular shape
-     *  @param {Number} [radius=1]
-     *  @param {Number} [minRadius=0]
+     *  @param {Number} [radius]
+     *  @param {Number} [minRadius]
      *  @return {Vector2}
      *  @memberof Random */
     export function randInCircle(radius?: number, minRadius?: number): Vector2;
     /** Returns a random Vector2 with the passed in length
-     *  @param {Number} [length=1]
+     *  @param {Number} [length]
      *  @return {Vector2}
      *  @memberof Random */
     export function randVector(length?: number): Vector2;
     /** Returns a random color between the two passed in colors, combine components if linear
-     *  @param {Color}   [colorA=Color()]
-     *  @param {Color}   [colorB=Color(0,0,0,1)]
+     *  @param {Color}   [colorA=(1,1,1,1)]
+     *  @param {Color}   [colorB=(0,0,0,1)]
      *  @param {Boolean} [linear]
      *  @return {Color}
      *  @memberof Random */
@@ -686,13 +691,13 @@ declare module "littlejsengine" {
         /** @property {Number} - random seed */
         seed: number;
         /** Returns a seeded random value between the two values passed in
-        *  @param {Number} [valueA=1]
-        *  @param {Number} [valueB=0]
+        *  @param {Number} [valueA]
+        *  @param {Number} [valueB]
         *  @return {Number} */
         float(valueA?: number, valueB?: number): number;
         /** Returns a floored seeded random value the two values passed in
         *  @param {Number} valueA
-        *  @param {Number} [valueB=0]
+        *  @param {Number} [valueB]
         *  @return {Number} */
         int(valueA: number, valueB?: number): number;
         /** Randomly returns either -1 or 1 deterministically
@@ -710,8 +715,8 @@ declare module "littlejsengine" {
      */
     export class Vector2 {
         /** Create a 2D vector with the x and y passed in, can also be created with vec2()
-         *  @param {Number} [x=0] - X axis location
-         *  @param {Number} [y=0] - Y axis location */
+         *  @param {Number} [x] - X axis location
+         *  @param {Number} [y] - Y axis location */
         constructor(x?: number, y?: number);
         /** @property {Number} - X axis location */
         x: number;
@@ -755,11 +760,11 @@ declare module "littlejsengine" {
          * @return {Number} */
         distanceSquared(v: Vector2): number;
         /** Returns a new vector in same direction as this one with the length passed in
-         * @param {Number} [length=1]
+         * @param {Number} [length]
          * @return {Vector2} */
         normalize(length?: number): Vector2;
         /** Returns a new vector clamped to length passed in
-         * @param {Number} [length=1]
+         * @param {Number} [length]
          * @return {Vector2} */
         clampLength(length?: number): Vector2;
         /** Returns the dot product of this and the vector passed in
@@ -774,14 +779,18 @@ declare module "littlejsengine" {
          * @return {Number} */
         angle(): number;
         /** Sets this vector with angle and length passed in
-         * @param {Number} [angle=0]
-         * @param {Number} [length=1]
+         * @param {Number} [angle]
+         * @param {Number} [length]
          * @return {Vector2} */
         setAngle(angle?: number, length?: number): Vector2;
         /** Returns copy of this vector rotated by the angle passed in
          * @param {Number} angle
          * @return {Vector2} */
         rotate(angle: number): Vector2;
+        /** Set the integer direction of this vector, corrosponding to multiples of 90 degree rotation (0-3)
+         * @param {Number} [direction]
+         * @param {Number} [length] */
+        setDirection(direction?: number, length?: number): Vector2;
         /** Returns the integer direction of this vector, corrosponding to multiples of 90 degree rotation (0-3)
          * @return {Number} */
         direction(): number;
@@ -814,15 +823,15 @@ declare module "littlejsengine" {
      * let a = new Color;              // white
      * let b = new Color(1, 0, 0);     // red
      * let c = new Color(0, 0, 0, 0);  // transparent black
-     * let d = RGB(0, 0, 1);           // blue using rgb color
-     * let e = HSL(.3, 1, .5);         // green using hsl color
+     * let d = rgb(0, 0, 1);           // blue using rgb color
+     * let e = hsl(.3, 1, .5);         // green using hsl color
      */
     export class Color {
         /** Create a color with the rgba components passed in, white by default
-         *  @param {Number} [r=1] - red
-         *  @param {Number} [g=1] - green
-         *  @param {Number} [b=1] - blue
-         *  @param {Number} [a=1] - alpha*/
+         *  @param {Number} [r] - red
+         *  @param {Number} [g] - green
+         *  @param {Number} [b] - blue
+         *  @param {Number} [a] - alpha*/
         constructor(r?: number, g?: number, b?: number, a?: number);
         /** @property {Number} - Red */
         r: number;
@@ -865,22 +874,22 @@ declare module "littlejsengine" {
          * @return {Color} */
         lerp(c: Color, percent: number): Color;
         /** Sets this color given a hue, saturation, lightness, and alpha
-         * @param {Number} [h=0] - hue
-         * @param {Number} [s=0] - saturation
-         * @param {Number} [l=1] - lightness
-         * @param {Number} [a=1] - alpha
+         * @param {Number} [h] - hue
+         * @param {Number} [s] - saturation
+         * @param {Number} [l] - lightness
+         * @param {Number} [a] - alpha
          * @return {Color} */
         setHSLA(h?: number, s?: number, l?: number, a?: number): Color;
         /** Returns this color expressed in hsla format
          * @return {Array} */
-        getHSLA(): any[];
+        HSLA(): any[];
         /** Returns a new color that has each component randomly adjusted
-         * @param {Number} [amount=.05]
-         * @param {Number} [alphaAmount=0]
+         * @param {Number} [amount]
+         * @param {Number} [alphaAmount]
          * @return {Color} */
         mutate(amount?: number, alphaAmount?: number): Color;
         /** Returns this color expressed as a hex color code
-         * @param {Boolean} [useAlpha=1] - if alpha should be included in result
+         * @param {Boolean} [useAlpha] - if alpha should be included in result
          * @return {String} */
         toString(useAlpha?: boolean): string;
         /** Set this color from a hex code
@@ -907,7 +916,7 @@ declare module "littlejsengine" {
         time: number;
         setTime: number;
         /** Set the timer with seconds passed in
-         *  @param {Number} [timeLeft=0] - How much time left before the timer is elapsed in seconds */
+         *  @param {Number} [timeLeft] - How much time left before the timer is elapsed in seconds */
         set(timeLeft?: number): void;
         /** Unset the timer */
         unset(): void;
@@ -935,8 +944,8 @@ declare module "littlejsengine" {
     }
     /**
      * Create a 2d vector, can take another Vector2 to copy, 2 scalars, or 1 scalar
-     * @param {(Number|Vector2)} [x=0]
-     * @param {Number} [y=0]
+     * @param {(Number|Vector2)} [x]
+     * @param {Number} [y]
      * @return {Vector2}
      * @example
      * let a = vec2(0, 1); // vector with coordinates (0, 1)
@@ -947,7 +956,7 @@ declare module "littlejsengine" {
      */
     export function vec2(x?: (number | Vector2), y?: number): Vector2;
     /**
-     * Create a color object with RGBA values
+     * Create a color object with RGBA values, white by default
      * @param {Number} [r=1] - red
      * @param {Number} [g=1] - green
      * @param {Number} [b=1] - blue
@@ -957,7 +966,7 @@ declare module "littlejsengine" {
      */
     export function rgb(r?: number, g?: number, b?: number, a?: number): Color;
     /**
-     * Create a color object with HSLA values
+     * Create a color object with HSLA values, white by default
      * @param {Number} [h=0] - hue
      * @param {Number} [s=0] - saturation
      * @param {Number} [l=1] - lightness
@@ -974,9 +983,9 @@ declare module "littlejsengine" {
      * Create a tile info object
      * - This can take vecs or floats for easier use and conversion
      * - If an index is passed in, the tile size and index will determine the position
-     * @param {(Number|Vector2)} [pos=Vector2()]         - Top left corner of tile in pixels or index
-     * @param {(Number|Vector2)} [size=tileSizeDefault]  - Size of tile in pixels
-     * @param {Number} [textureIndex=0]                  - Texture index to use
+     * @param {(Number|Vector2)} [pos=(0,0)]            - Top left corner of tile in pixels or index
+     * @param {(Number|Vector2)} [size=tileSizeDefault] - Size of tile in pixels
+     * @param {Number} [textureIndex]                   - Texture index to use
      * @return {TileInfo}
      * @example
      * tile(2)                       // a tile at index 2 using the default tile size of 16
@@ -991,9 +1000,9 @@ declare module "littlejsengine" {
      */
     export class TileInfo {
         /** Create a tile info object
-         *  @param {Vector2} [pos=Vector2()]        - Top left corner of tile in pixels
+         *  @param {Vector2} [pos=(0,0)]            - Top left corner of tile in pixels
          *  @param {Vector2} [size=tileSizeDefault] - Size of tile in pixels
-         *  @param {Number}  [textureIndex=0]       - Texture index to use
+         *  @param {Number}  [textureIndex]         - Texture index to use
          */
         constructor(pos?: Vector2, size?: Vector2, textureIndex?: number);
         /** @property {Vector2} - Top left corner of tile in pixels */
@@ -1002,11 +1011,16 @@ declare module "littlejsengine" {
         size: Vector2;
         /** @property {Number} - Texture index to use */
         textureIndex: number;
-        /** Returns an offset copy of this tile, useful for animation
+        /** Returns a copy of this tile offset by a vector
         *  @param {Vector2} offset - Offset to apply in pixels
         *  @return {TileInfo}
         */
         offset(offset: Vector2): TileInfo;
+        /** Returns a copy of this tile offset by a number of animation frames
+        *  @param {Number} frame - Offset to apply in animation frames
+        *  @return {TileInfo}
+        */
+        frame(frame: number): TileInfo;
         /** Returns the texture info for this tile
         *  @return {TextureInfo}
         */
@@ -1014,9 +1028,13 @@ declare module "littlejsengine" {
     }
     /** Texture Info - Stores info about each texture */
     export class TextureInfo {
-        constructor(image: any);
-        /** @property {CanvasImageSource} - image source */
-        image: any;
+        /**
+         * Create a TextureInfo, called automatically by the engine
+         * @param {HTMLImageElement} image
+         */
+        constructor(image: HTMLImageElement);
+        /** @property {HTMLImageElement} - image source */
+        image: HTMLImageElement;
         /** @property {Vector2} - size of the image */
         size: Vector2;
         /** @property {WebGLTexture} - webgl texture */
@@ -1076,36 +1094,35 @@ declare module "littlejsengine" {
      *  @memberof Draw */
     export function worldToScreen(worldPos: Vector2): Vector2;
     /** Draw textured tile centered in world space, with color applied if using WebGL
-     *  @param {Vector2} pos                            - Center of the tile in world space
-     *  @param {Vector2} [size=Vector2(1,1)]            - Size of the tile in world space
-     *  @param {TileInfo}[tileInfo]                     - Tile info to use, untextured if undefined
-     *  @param {Vector2} [tileSize=tileSizeDefault]     - Tile size in source pixels
-     *  @param {Color}   [color=Color()]                - Color to modulate with
-     *  @param {Number}  [angle=0]                      - Angle to rotate by
-     *  @param {Boolean} [mirror=0]                     - If true image is flipped along the Y axis
-     *  @param {Color}   [additiveColor=Color(0,0,0,0)] - Additive color to be applied
-     *  @param {Boolean} [useWebGL=glEnable]            - Use accelerated WebGL rendering
-     *  @param {Boolean} [screenSpace=0]                - If true the pos and size are in screen space
-     *  @param {CanvasRenderingContext2D} [context]     - Canvas 2D context to draw to
+     *  @param {Vector2} pos                        - Center of the tile in world space
+     *  @param {Vector2} [size=(1,1)]               - Size of the tile in world space
+     *  @param {TileInfo}[tileInfo]                 - Tile info to use, untextured if undefined
+     *  @param {Color}   [color=(1,1,1,1)]          - Color to modulate with
+     *  @param {Number}  [angle]                    - Angle to rotate by
+     *  @param {Boolean} [mirror]                   - If true image is flipped along the Y axis
+     *  @param {Color}   [additiveColor=(0,0,0,0)]  - Additive color to be applied
+     *  @param {Boolean} [useWebGL=glEnable]        - Use accelerated WebGL rendering
+     *  @param {Boolean} [screenSpace=false]        - If true the pos and size are in screen space
+     *  @param {CanvasRenderingContext2D} [context] - Canvas 2D context to draw to
      *  @memberof Draw */
     export function drawTile(pos: Vector2, size?: Vector2, tileInfo?: TileInfo, color?: Color, angle?: number, mirror?: boolean, additiveColor?: Color, useWebGL?: boolean, screenSpace?: boolean, context?: CanvasRenderingContext2D): void;
     /** Draw colored rect centered on pos
      *  @param {Vector2} pos
-     *  @param {Vector2} [size=Vector2(1,1)]
-     *  @param {Color}   [color=Color()]
-     *  @param {Number}  [angle=0]
+     *  @param {Vector2} [size=(1,1)]
+     *  @param {Color}   [color=(1,1,1,1)]
+     *  @param {Number}  [angle]
      *  @param {Boolean} [useWebGL=glEnable]
-     *  @param {Boolean} [screenSpace=0]
+     *  @param {Boolean} [screenSpace=false]
      *  @param {CanvasRenderingContext2D} [context]
      *  @memberof Draw */
     export function drawRect(pos: Vector2, size?: Vector2, color?: Color, angle?: number, useWebGL?: boolean, screenSpace?: boolean, context?: CanvasRenderingContext2D): void;
     /** Draw colored line between two points
      *  @param {Vector2} posA
      *  @param {Vector2} posB
-     *  @param {Number}  [thickness=.1]
-     *  @param {Color}   [color=Color()]
+     *  @param {Number}  [thickness]
+     *  @param {Color}   [color=(1,1,1,1)]
      *  @param {Boolean} [useWebGL=glEnable]
-     *  @param {Boolean} [screenSpace=0]
+     *  @param {Boolean} [screenSpace=false]
      *  @param {CanvasRenderingContext2D} [context]
      *  @memberof Draw */
     export function drawLine(posA: Vector2, posB: Vector2, thickness?: number, color?: Color, useWebGL?: boolean, screenSpace?: boolean, context?: CanvasRenderingContext2D): void;
@@ -1115,12 +1132,12 @@ declare module "littlejsengine" {
      *  @param {Number}   angle
      *  @param {Boolean}  mirror
      *  @param {Function} drawFunction
-     *  @param {Boolean} [screenSpace=0]
+     *  @param {Boolean} [screenSpace=false]
      *  @param {CanvasRenderingContext2D} [context=mainContext]
      *  @memberof Draw */
     export function drawCanvas2D(pos: Vector2, size: Vector2, angle: number, mirror: boolean, drawFunction: Function, screenSpace?: boolean, context?: CanvasRenderingContext2D): void;
     /** Enable normal or additive blend mode
-     *  @param {Boolean} [additive=0]
+     *  @param {Boolean} [additive]
      *  @param {Boolean} [useWebGL=glEnable]
      *  @param {CanvasRenderingContext2D} [context=mainContext]
      *  @memberof Draw */
@@ -1129,28 +1146,28 @@ declare module "littlejsengine" {
      *  Automatically splits new lines into rows
      *  @param {String}  text
      *  @param {Vector2} pos
-     *  @param {Number}  [size=1]
-     *  @param {Color}   [color=Color()]
-     *  @param {Number}  [lineWidth=0]
-     *  @param {Color}   [lineColor=Color(0,0,0)]
-     *  @param {String}  [textAlign='center']
+     *  @param {Number}  [size]
+     *  @param {Color}   [color=(1,1,1,1)]
+     *  @param {Number}  [lineWidth]
+     *  @param {Color}   [lineColor=(0,0,0,1)]
+     *  @param {CanvasTextAlign}  [textAlign]
      *  @param {String}  [font=fontDefault]
      *  @param {CanvasRenderingContext2D} [context=overlayContext]
      *  @memberof Draw */
-    export function drawTextScreen(text: string, pos: Vector2, size?: number, color?: Color, lineWidth?: number, lineColor?: Color, textAlign?: string, font?: string, context?: CanvasRenderingContext2D): void;
+    export function drawTextScreen(text: string, pos: Vector2, size?: number, color?: Color, lineWidth?: number, lineColor?: Color, textAlign?: CanvasTextAlign, font?: string, context?: CanvasRenderingContext2D): void;
     /** Draw text on overlay canvas in world space
      *  Automatically splits new lines into rows
      *  @param {String}  text
      *  @param {Vector2} pos
-     *  @param {Number}  [size=1]
-     *  @param {Color}   [color=Color()]
-     *  @param {Number}  [lineWidth=0]
-     *  @param {Color}   [lineColor=Color(0,0,0)]
-     *  @param {String}  [textAlign='center']
+     *  @param {Number}  [size]
+     *  @param {Color}   [color=(1,1,1,1)]
+     *  @param {Number}  [lineWidth]
+     *  @param {Color}   [lineColor=(0,0,0,1)]
+     *  @param {CanvasTextAlign}  [textAlign='center']
      *  @param {String}  [font=fontDefault]
      *  @param {CanvasRenderingContext2D} [context=overlayContext]
      *  @memberof Draw */
-    export function drawText(text: string, pos: Vector2, size?: number, color?: Color, lineWidth?: number, lineColor?: Color, textAlign?: string, font?: string, context?: CanvasRenderingContext2D): void;
+    export function drawText(text: string, pos: Vector2, size?: number, color?: Color, lineWidth?: number, lineColor?: Color, textAlign?: CanvasTextAlign, font?: string, context?: CanvasRenderingContext2D): void;
     export let engineFontImage: any;
     /**
      * Font Image Object - Draw text on a 2D canvas by using characters in an image
@@ -1166,9 +1183,9 @@ declare module "littlejsengine" {
      */
     export class FontImage {
         /** Create an image font
-         *  @param {HTMLImageElement} [image] - Image for the font, if undefined default font is used
-         *  @param {Vector2} [tileSize=vec2(8)] - Size of the font source tiles
-         *  @param {Vector2} [paddingSize=vec2(0,1)] - How much extra space to add between characters
+         *  @param {HTMLImageElement} [image]    - Image for the font, if undefined default font is used
+         *  @param {Vector2} [tileSize=(8,8)]    - Size of the font source tiles
+         *  @param {Vector2} [paddingSize=(0,1)] - How much extra space to add between characters
          *  @param {CanvasRenderingContext2D} [context=overlayContext] - context to draw to
          */
         constructor(image?: HTMLImageElement, tileSize?: Vector2, paddingSize?: Vector2, context?: CanvasRenderingContext2D);
@@ -1186,7 +1203,7 @@ declare module "littlejsengine" {
         /** Draw text in screen space using the image font
          *  @param {String}  text
          *  @param {Vector2} pos
-         *  @param {Number}  [scale=4]
+         *  @param {Number}  [scale]
          *  @param {Boolean} [center]
          */
         drawTextScreen(text: string, pos: Vector2, scale?: number, center?: boolean): void;
@@ -1214,9 +1231,9 @@ declare module "littlejsengine" {
      *  @memberof WebGL */
     export let glCanvas: HTMLCanvasElement;
     /** 2d context for glCanvas
-     *  @type {WebGLRenderingContext}
+     *  @type {WebGL2RenderingContext}
      *  @memberof WebGL */
-    export let glContext: WebGLRenderingContext;
+    export let glContext: WebGL2RenderingContext;
     /** Set the WebGl texture, called automatically if using multiple textures
      *  - This may also flush the gl buffer resulting in more draw calls and worse performance
      *  @param {WebGLTexture} texture
@@ -1224,26 +1241,26 @@ declare module "littlejsengine" {
     export function glSetTexture(texture: WebGLTexture): void;
     /** Compile WebGL shader of the given type, will throw errors if in debug mode
      *  @param {String} source
-     *  @param          type
+     *  @param {Number} type
      *  @return {WebGLShader}
      *  @memberof WebGL */
-    export function glCompileShader(source: string, type: any): WebGLShader;
+    export function glCompileShader(source: string, type: number): WebGLShader;
     /** Create WebGL program with given shaders
-     *  @param {WebGLShader} vsSource
-     *  @param {WebGLShader} fsSource
+     *  @param {String} vsSource
+     *  @param {String} fsSource
      *  @return {WebGLProgram}
      *  @memberof WebGL */
-    export function glCreateProgram(vsSource: WebGLShader, fsSource: WebGLShader): WebGLProgram;
+    export function glCreateProgram(vsSource: string, fsSource: string): WebGLProgram;
     /** Create WebGL texture from an image and init the texture settings
-     *  @param {Image} image
+     *  @param {HTMLImageElement} image
      *  @return {WebGLTexture}
      *  @memberof WebGL */
-    export function glCreateTexture(image: new (width?: number, height?: number) => HTMLImageElement): WebGLTexture;
+    export function glCreateTexture(image: HTMLImageElement): WebGLTexture;
     /** Set up a post processing shader
      *  @param {String} shaderCode
      *  @param {Boolean} includeOverlay
      *  @memberof WebGL */
-    export function glInitPostProcess(shaderCode: string, includeOverlay: boolean): void;
+    export function glInitPostProcess(shaderCode: string, includeOverlay?: boolean): void;
     /**
      * LittleJS Input System
      * - Tracks keyboard down, pressed, and released
@@ -1253,23 +1270,23 @@ declare module "littlejsengine" {
      * @namespace Input
      */
     /** Returns true if device key is down
-     *  @param {Number} key
-     *  @param {Number} [device=0]
+     *  @param {String|Number} key
+     *  @param {Number} [device]
      *  @return {Boolean}
      *  @memberof Input */
-    export function keyIsDown(key: number, device?: number): boolean;
+    export function keyIsDown(key: string | number, device?: number): boolean;
     /** Returns true if device key was pressed this frame
-     *  @param {Number} key
-     *  @param {Number} [device=0]
+     *  @param {String|Number} key
+     *  @param {Number} [device]
      *  @return {Boolean}
      *  @memberof Input */
-    export function keyWasPressed(key: number, device?: number): boolean;
+    export function keyWasPressed(key: string | number, device?: number): boolean;
     /** Returns true if device key was released this frame
-     *  @param {Number} key
-     *  @param {Number} [device=0]
+     *  @param {String|Number} key
+     *  @param {Number} [device]
      *  @return {Boolean}
      *  @memberof Input */
-    export function keyWasReleased(key: number, device?: number): boolean;
+    export function keyWasReleased(key: string | number, device?: number): boolean;
     /** Clears all input
      *  @memberof Input */
     export function clearInput(): void;
@@ -1282,23 +1299,23 @@ declare module "littlejsengine" {
      * @namespace Input
      */
     /** Returns true if device key is down
-     *  @param {Number} key
-     *  @param {Number} [device=0]
+     *  @param {String|Number} key
+     *  @param {Number} [device]
      *  @return {Boolean}
      *  @memberof Input */
-    export function mouseIsDown(key: number, device?: number): boolean;
+    export function mouseIsDown(key: string | number, device?: number): boolean;
     /** Returns true if device key was pressed this frame
-     *  @param {Number} key
-     *  @param {Number} [device=0]
+     *  @param {String|Number} key
+     *  @param {Number} [device]
      *  @return {Boolean}
      *  @memberof Input */
-    export function mouseWasPressed(key: number, device?: number): boolean;
+    export function mouseWasPressed(key: string | number, device?: number): boolean;
     /** Returns true if device key was released this frame
-     *  @param {Number} key
-     *  @param {Number} [device=0]
+     *  @param {String|Number} key
+     *  @param {Number} [device]
      *  @return {Boolean}
      *  @memberof Input */
-    export function mouseWasReleased(key: number, device?: number): boolean;
+    export function mouseWasReleased(key: string | number, device?: number): boolean;
     /** Mouse pos in world space
      *  @type {Vector2}
      *  @memberof Input */
@@ -1321,34 +1338,34 @@ declare module "littlejsengine" {
     export let preventDefaultInput: boolean;
     /** Returns true if gamepad button is down
      *  @param {Number} button
-     *  @param {Number} [gamepad=0]
+     *  @param {Number} [gamepad]
      *  @return {Boolean}
      *  @memberof Input */
     export function gamepadIsDown(button: number, gamepad?: number): boolean;
     /** Returns true if gamepad button was pressed
      *  @param {Number} button
-     *  @param {Number} [gamepad=0]
+     *  @param {Number} [gamepad]
      *  @return {Boolean}
      *  @memberof Input */
     export function gamepadWasPressed(button: number, gamepad?: number): boolean;
     /** Returns true if gamepad button was released
      *  @param {Number} button
-     *  @param {Number} [gamepad=0]
+     *  @param {Number} [gamepad]
      *  @return {Boolean}
      *  @memberof Input */
     export function gamepadWasReleased(button: number, gamepad?: number): boolean;
     /** Returns gamepad stick value
      *  @param {Number} stick
-     *  @param {Number} [gamepad=0]
+     *  @param {Number} [gamepad]
      *  @return {Vector2}
      *  @memberof Input */
     export function gamepadStick(stick: number, gamepad?: number): Vector2;
     export function mouseToScreen(mousePos: any): Vector2;
     export function gamepadsUpdate(): void;
     /** Pulse the vibration hardware if it exists
-     *  @param {Number} [pattern=100] - a single value in miliseconds or vibration interval array
+     *  @param {Number|Array} [pattern] - single value in ms or vibration interval array
      *  @memberof Input */
-    export function vibrate(pattern?: number): void;
+    export function vibrate(pattern?: number | any[]): void;
     /** Cancel any ongoing vibration
      *  @memberof Input */
     export function vibrateStop(): void;
@@ -1366,7 +1383,7 @@ declare module "littlejsengine" {
      * @namespace Audio
      */
     /**
-     * Sound Object - Stores a zzfx sound for later use and can be played positionally
+     * Sound Object - Stores a sound for later use and can be played positionally
      *
      * <a href=https://killedbyapixel.github.io/ZzFX/>Create sounds using the ZzFX Sound Designer.</a>
      * @example
@@ -1380,7 +1397,7 @@ declare module "littlejsengine" {
         /** Create a sound object and cache the zzfx samples for later use
          *  @param {Array}  zzfxSound - Array of zzfx parameters, ex. [.5,.5]
          *  @param {Number} [range=soundDefaultRange] - World space max range of sound, will not play if camera is farther away
-         *  @param {Number} [taper=soundDefaultTaper] - At what percentage of range should it start tapering off
+         *  @param {Number} [taper=soundDefaultTaper] - At what percentage of range should it start tapering
          */
         constructor(zzfxSound: any[], range?: number, taper?: number);
         /** @property {Number} - World space max range of sound, will not play if camera is farther away */
@@ -1393,16 +1410,20 @@ declare module "littlejsengine" {
         sampleRate: number;
         /** Play the sound
          *  @param {Vector2} [pos] - World space position to play the sound, sound is not attenuated if null
-         *  @param {Number}  [volume=1] - How much to scale volume by (in addition to range fade)
-         *  @param {Number}  [pitch=1] - How much to scale pitch by (also adjusted by this.randomness)
-         *  @param {Number}  [randomnessScale=1] - How much to scale randomness
-         *  @param {Boolean} [loop=0] - Should the sound loop
+         *  @param {Number}  [volume] - How much to scale volume by (in addition to range fade)
+         *  @param {Number}  [pitch] - How much to scale pitch by (also adjusted by this.randomness)
+         *  @param {Number}  [randomnessScale] - How much to scale randomness
+         *  @param {Boolean} [loop] - Should the sound loop
          *  @return {AudioBufferSourceNode} - The audio source node
          */
         play(pos?: Vector2, volume?: number, pitch?: number, randomnessScale?: number, loop?: boolean): AudioBufferSourceNode;
-        source: number | AudioBufferSourceNode;
+        source: AudioBufferSourceNode;
         /** Stop the last instance of this sound that was played */
         stop(): void;
+        /** Get source of most recent instance of this sound that was played
+         *  @return {AudioBufferSourceNode}
+         */
+        getSource(): AudioBufferSourceNode;
         /** Play the sound as a note with a semitone offset
          *  @param {Number}  semitoneOffset - How many semitones to offset pitch
          *  @param {Vector2} [pos] - World space position to play the sound, sound is not attenuated if null
@@ -1414,10 +1435,6 @@ declare module "littlejsengine" {
          *  @return {Number} - How long the sound is in seconds (undefined if loading)
          */
         getDuration(): number;
-        /** Check if the last instance of this sound is playing
-         *  @return {Boolean} - True if the sound is playing
-         */
-        isPlaying(): boolean;
         /** Check if sound is loading, for sounds fetched from a url
          *  @return {Boolean} - True if sound is loading and not ready to play
          */
@@ -1436,7 +1453,7 @@ declare module "littlejsengine" {
     export class SoundWave extends Sound {
         /** Create a sound object and cache the wave file for later use
          *  @param {String} filename - Filename of audio file to load
-         *  @param {Number} [randomness=0] - How much to randomize frequency each time sound plays
+         *  @param {Number} [randomness] - How much to randomize frequency each time sound plays
          *  @param {Number} [range=soundDefaultRange] - World space max range of sound, will not play if camera is farther away
          *  @param {Number} [taper=soundDefaultTaper] - At what percentage of range should it start tapering off
          */
@@ -1461,7 +1478,7 @@ declare module "littlejsengine" {
      *                 1, 0, 9, 1    // channel notes
      *             ],
      *             [                 // channel 1
-     *                 0, 1,         // instrument 1, right speaker
+     *                 0, 1,         // instrument 0, right speaker
      *                 0, 12, 17, -1 // channel notes
      *             ]
      *         ],
@@ -1475,30 +1492,30 @@ declare module "littlejsengine" {
      */
     export class Music extends Sound {
         /** Create a music object and cache the zzfx music samples for later use
-         *  @param {Array} zzfxMusic - Array of zzfx music parameters
+         *  @param {[Array, Array, Array, Number]} zzfxMusic - Array of zzfx music parameters
          */
-        constructor(zzfxMusic: any[]);
+        constructor(zzfxMusic: [any[], any[], any[], number]);
         sampleChannels: any[];
         /** Play the music
          *  @param {Number}  [volume=1] - How much to scale volume by
-         *  @param {Boolean} [loop=1] - True if the music should loop
+         *  @param {Boolean} [loop] - True if the music should loop
          *  @return {AudioBufferSourceNode} - The audio source node
          */
         playMusic(volume?: number, loop?: boolean): AudioBufferSourceNode;
     }
     /** Play an mp3, ogg, or wav audio from a local file or url
-     *  @param {String}  url - Location of sound file to play
-     *  @param {Number}  [volume=1] - How much to scale volume by
-     *  @param {Boolean} [loop=1] - True if the music should loop
+     *  @param {String}  filename - Location of sound file to play
+     *  @param {Number}  [volume] - How much to scale volume by
+     *  @param {Boolean} [loop] - True if the music should loop
      *  @return {HTMLAudioElement} - The audio element for this sound
      *  @memberof Audio */
-    export function playAudioFile(url: string, volume?: number, loop?: boolean): HTMLAudioElement;
+    export function playAudioFile(filename: string, volume?: number, loop?: boolean): HTMLAudioElement;
     /** Speak text with passed in settings
      *  @param {String} text - The text to speak
      *  @param {String} [language] - The language/accent to use (examples: en, it, ru, ja, zh)
-     *  @param {Number} [volume=1] - How much to scale volume by
-     *  @param {Number} [rate=1] - How quickly to speak
-     *  @param {Number} [pitch=1] - How much to change the pitch by
+     *  @param {Number} [volume] - How much to scale volume by
+     *  @param {Number} [rate] - How quickly to speak
+     *  @param {Number} [pitch] - How much to change the pitch by
      *  @return {SpeechSynthesisUtterance} - The utterance that was spoken
      *  @memberof Audio */
     export function speak(text: string, language?: string, volume?: number, rate?: number, pitch?: number): SpeechSynthesisUtterance;
@@ -1507,19 +1524,20 @@ declare module "littlejsengine" {
     export function speakStop(): void;
     /** Get frequency of a note on a musical scale
      *  @param {Number} semitoneOffset - How many semitones away from the root note
-     *  @param {Number} [rootNoteFrequency=220] - Frequency at semitone offset 0
+     *  @param {Number} [rootFrequency=220] - Frequency at semitone offset 0
      *  @return {Number} - The frequency of the note
      *  @memberof Audio */
     export function getNoteFrequency(semitoneOffset: number, rootFrequency?: number): number;
     /** Audio context used by the engine
+     *  @type {AudioContext}
      *  @memberof Audio */
-    export let audioContext: any;
+    export let audioContext: AudioContext;
     /** Play cached audio samples with given settings
      *  @param {Array}   sampleChannels - Array of arrays of samples to play (for stereo playback)
-     *  @param {Number}  [volume=1] - How much to scale volume by
-     *  @param {Number}  [rate=1] - The playback rate to use
-     *  @param {Number}  [pan=0] - How much to apply stereo panning
-     *  @param {Boolean} [loop=0] - True if the sound should loop when it reaches the end
+     *  @param {Number}  [volume] - How much to scale volume by
+     *  @param {Number}  [rate] - The playback rate to use
+     *  @param {Number}  [pan] - How much to apply stereo panning
+     *  @param {Boolean} [loop] - True if the sound should loop when it reaches the end
      *  @param {Number}  [sampleRate=44100] - Sample rate for the sound
      *  @return {AudioBufferSourceNode} - The audio node of the sound played
      *  @memberof Audio */
@@ -1540,7 +1558,7 @@ declare module "littlejsengine" {
      * - Automatically adds self to object list
      * - Will be updated and rendered each frame
      * - Renders as a sprite from a tilesheet by default
-     * - Can have color and addtive color applied
+     * - Can have color and additive color applied
      * - 2D Physics and collision system
      * - Sorted by renderOrder
      * - Objects can have children attached
@@ -1561,24 +1579,30 @@ declare module "littlejsengine" {
      */
     export class EngineObject {
         /** Create an engine object and adds it to the list of objects
-         *  @param {Vector2} [pos=Vector2()]            - World space position of the object
-         *  @param {Vector2} [size=Vector2(1,1)]        - World space size of the object
-         *  @param {TileInfo} [tileInfo]                - Tile info to render object (undefined is untextured)
-         *  @param {Number}  [angle=0]                  - Angle the object is rotated by
-         *  @param {Color}   [color=Color()]            - Color to apply to tile when rendered
-         *  @param {Number}  [renderOrder=0]            - Objects sorted by renderOrder before being rendered
+         *  @param {Vector2}  [pos=(0,0)]       - World space position of the object
+         *  @param {Vector2}  [size=(1,1)]      - World space size of the object
+         *  @param {TileInfo} [tileInfo]        - Tile info to render object (undefined is untextured)
+         *  @param {Number}   [angle]           - Angle the object is rotated by
+         *  @param {Color}    [color=(1,1,1,1)] - Color to apply to tile when rendered
+         *  @param {Number}   [renderOrder]     - Objects sorted by renderOrder before being rendered
          */
         constructor(pos?: Vector2, size?: Vector2, tileInfo?: TileInfo, angle?: number, color?: Color, renderOrder?: number);
         /** @property {Vector2} - World space position of the object */
         pos: Vector2;
         /** @property {Vector2} - World space width and height of the object */
         size: Vector2;
+        /** @property {Vector2} - Size of object used for drawing, uses size if not set */
+        drawSize: any;
         /** @property {TileInfo} - Tile info to render object (undefined is untextured) */
         tileInfo: TileInfo;
         /** @property {Number}  - Angle to rotate the object */
         angle: number;
         /** @property {Color}   - Color to apply when rendered */
         color: Color;
+        /** @property {Color}   - Additive color to apply when rendered */
+        additiveColor: any;
+        /** @property {Boolean} - Should it flip along y axis when rendered */
+        mirror: boolean;
         /** @property {Number} [mass=objectDefaultMass]                 - How heavy the object is, static if 0 */
         mass: number;
         /** @property {Number} [damping=objectDefaultDamping]           - How much to slow down velocity each frame (0-1) */
@@ -1589,17 +1613,30 @@ declare module "littlejsengine" {
         elasticity: number;
         /** @property {Number} [friction=objectDefaultFriction]         - How much friction to apply when sliding (0-1) */
         friction: number;
-        /** @property {Number} [gravityScale=1]                         - How much to scale gravity by for this object */
+        /** @property {Number}  - How much to scale gravity by for this object */
         gravityScale: number;
-        /** @property {Number} [renderOrder=0]                          - Objects are sorted by render order */
+        /** @property {Number}  - Objects are sorted by render order */
         renderOrder: number;
-        /** @property {Vector2} [velocity=Vector2()]                    - Velocity of the object */
+        /** @property {Vector2} - Velocity of the object */
         velocity: Vector2;
-        /** @property {Number} [angleVelocity=0]                        - Angular velocity of the object */
+        /** @property {Number}  - Angular velocity of the object */
         angleVelocity: number;
+        /** @property {Number}  - Track when object was created  */
         spawnTime: number;
+        /** @property {Array}   - List of children of this object */
         children: any[];
+        /** @property {EngineObject} - Parent of object if in local space  */
+        parent: any;
+        /** @property {Vector2}      - Local position if child */
+        localPos: Vector2;
+        /** @property {Number}       - Local angle if child  */
+        localAngle: number;
+        /** @property {Boolean} - Object collides with the tile collision */
         collideTiles: boolean;
+        /** @property {Boolean} - Object collides with solid objects */
+        collideSolidObjects: boolean;
+        /** @property {Boolean} - Object collides with and blocks other objects */
+        isSolid: boolean;
         /** Update the object transform and physics, called automatically by engine once each frame */
         update(): void;
         groundObject: any;
@@ -1637,19 +1674,17 @@ declare module "littlejsengine" {
         getMirrorSign(): number;
         /** Attaches a child to this with a given local transform
          *  @param {EngineObject} child
-         *  @param {Vector2}      [localPos=Vector2()]
-         *  @param {Number}       [localAngle=0] */
+         *  @param {Vector2}      [localPos=(0,0)]
+         *  @param {Number}       [localAngle] */
         addChild(child: EngineObject, localPos?: Vector2, localAngle?: number): void;
         /** Removes a child from this one
          *  @param {EngineObject} child */
         removeChild(child: EngineObject): void;
         /** Set how this object collides
-         *  @param {Boolean} [collideSolidObjects=1] - Does it collide with solid objects
-         *  @param {Boolean} [isSolid=1]             - Does it collide with and block other objects (expensive in large numbers)
-         *  @param {Boolean} [collideTiles=1]        - Does it collide with the tile collision */
+         *  @param {Boolean} [collideSolidObjects] - Does it collide with solid objects
+         *  @param {Boolean} [isSolid]             - Does it collide with and block other objects (expensive in large numbers)
+         *  @param {Boolean} [collideTiles]        - Does it collide with the tile collision */
         setCollision(collideSolidObjects?: boolean, isSolid?: boolean, collideTiles?: boolean): void;
-        collideSolidObjects: boolean;
-        isSolid: boolean;
         /** Returns string containg info about this object for debugging
          *  @return {String} */
         toString(): string;
@@ -1657,7 +1692,7 @@ declare module "littlejsengine" {
     /**
      * LittleJS Tile Layer System
      * - Caches arrays of tiles to off screen canvas for fast rendering
-     * - Unlimted numbers of layers, allocates canvases as needed
+     * - Unlimited numbers of layers, allocates canvases as needed
      * - Interfaces with EngineObject for collision
      * - Collision layer is separate from visible layers
      * - It is recommended to have a visible layer that matches the collision
@@ -1679,7 +1714,7 @@ declare module "littlejsengine" {
     export function initTileCollision(size: Vector2): void;
     /** Set tile collision data
      *  @param {Vector2} pos
-     *  @param {Number}  [data=0]
+     *  @param {Number}  [data]
      *  @memberof TileCollision */
     export function setTileCollisionData(pos: Vector2, data?: number): void;
     /** Get tile collision data
@@ -1689,7 +1724,7 @@ declare module "littlejsengine" {
     export function getTileCollisionData(pos: Vector2): number;
     /** Check if collision with another object should occur
      *  @param {Vector2}      pos
-     *  @param {Vector2}      [size=Vector2(1,1)]
+     *  @param {Vector2}      [size=(0,0)]
      *  @param {EngineObject} [object]
      *  @return {Boolean}
      *  @memberof TileCollision */
@@ -1713,10 +1748,10 @@ declare module "littlejsengine" {
      */
     export class TileLayerData {
         /** Create a tile layer data object, one for each tile in a TileLayer
-         *  @param {Number}  [tile]          - The tile to use, untextured if undefined
-         *  @param {Number}  [direction=0]   - Integer direction of tile, in 90 degree increments
-         *  @param {Boolean} [mirror=0]      - If the tile should be mirrored along the x axis
-         *  @param {Color}   [color=Color()] - Color of the tile */
+         *  @param {Number}  [tile]      - The tile to use, untextured if undefined
+         *  @param {Number}  [direction] - Integer direction of tile, in 90 degree increments
+         *  @param {Boolean} [mirror]    - If the tile should be mirrored along the x axis
+         *  @param {Color}   [color]     - Color of the tile */
         constructor(tile?: number, direction?: number, mirror?: boolean, color?: Color);
         /** @property {Number}  - The tile to use, untextured if undefined */
         tile: number;
@@ -1743,44 +1778,49 @@ declare module "littlejsengine" {
      */
     export class TileLayer extends EngineObject {
         /** Create a tile layer object
-            *  @param {Vector2} [position=Vector2()]       - World space position
-            *  @param {Vector2} [size=tileCollisionSize]   - World space size
-            *  @param {TileInfo} [tileInfo]                - Tile info for layer
-            *  @param {Vector2} [scale=Vector2(1,1)]       - How much to scale this layer when rendered
-            *  @param {Number}  [renderOrder=0]            - Objects sorted by renderOrder before being rendered
-            */
-        constructor(pos: any, size?: Vector2, tileInfo?: TileInfo, scale?: Vector2, renderOrder?: number);
-        /** @property {HTMLCanvasElement}        - The canvas used by this tile layer */
+        *  @param {Vector2}  [position=(0,0)]     - World space position
+        *  @param {Vector2}  [size=tileCollisionSize] - World space size
+        *  @param {TileInfo} [tileInfo]    - Tile info for layer
+        *  @param {Vector2}  [scale=(1,1)] - How much to scale this layer when rendered
+        *  @param {Number}   [renderOrder] - Objects are sorted by renderOrder
+        */
+        constructor(position?: Vector2, size?: Vector2, tileInfo?: TileInfo, scale?: Vector2, renderOrder?: number);
+        /** @property {HTMLCanvasElement} - The canvas used by this tile layer */
         canvas: HTMLCanvasElement;
         /** @property {CanvasRenderingContext2D} - The 2D canvas context used by this tile layer */
         context: CanvasRenderingContext2D;
-        /** @property {Vector2}                  - How much to scale this layer when rendered */
+        /** @property {Vector2} - How much to scale this layer when rendered */
         scale: Vector2;
+        /** @property {Boolean} - If true this layer will render to overlay canvas and appear above all objects */
+        isOverlay: boolean;
         data: TileLayerData[];
         /** Set data at a given position in the array
-         *  @param {Vector2}       position   - Local position in array
-         *  @param {TileLayerData} data       - Data to set
-         *  @param {Boolean}       [redraw=0] - Force the tile to redraw if true */
-        setData(layerPos: any, data: TileLayerData, redraw?: boolean): void;
+         *  @param {Vector2}       layerPos - Local position in array
+         *  @param {TileLayerData} data     - Data to set
+         *  @param {Boolean}       [redraw] - Force the tile to redraw if true */
+        setData(layerPos: Vector2, data: TileLayerData, redraw?: boolean): void;
         /** Get data at a given position in the array
          *  @param {Vector2} layerPos - Local position in array
          *  @return {TileLayerData} */
         getData(layerPos: Vector2): TileLayerData;
         /** Draw all the tile data to an offscreen canvas
-         *  - This may be slow in some browsers
-        */
+         *  - This may be slow in some browsers but only needs to be done once */
         redraw(): void;
         /** Call to start the redraw process
-         *  @param {Boolean} [clear=0] - Should it clear the canvas before drawing */
+         *  - This can be used to manually update small parts of the level
+         *  @param {Boolean} [clear] - Should it clear the canvas before drawing */
         redrawStart(clear?: boolean): void;
-        savedRenderSettings: (number | HTMLCanvasElement | CanvasRenderingContext2D | Vector2)[];
+        /** @type {[HTMLCanvasElement, CanvasRenderingContext2D, Vector2, Vector2, number]} */
+        savedRenderSettings: [HTMLCanvasElement, CanvasRenderingContext2D, Vector2, Vector2, number];
         /** Call to end the redraw process */
         redrawEnd(): void;
-        /** Draw the tile at a given position
-         *  @param {Vector2} layerPos */
-        drawTileData(layerPos: Vector2): void;
-        /** Draw all the tiles in this layer */
-        drawAllTileData(): void;
+        /** Draw the tile at a given position in the tile grid
+         *  This can be used to clear out tiles when they are destroyed
+         *  Tiles can also be redrawn if isinde a redrawStart/End block
+         *  @param {Vector2} layerPos
+         *  @param {Boolean} [clear] - should the old tile be cleared out
+         */
+        drawTileData(layerPos: Vector2, clear?: boolean): void;
         /** Draw directly to the 2D canvas in world space (bipass webgl)
          *  @param {Vector2}  pos
          *  @param {Vector2}  size
@@ -1788,18 +1828,18 @@ declare module "littlejsengine" {
          *  @param {Boolean}  mirror
          *  @param {Function} drawFunction */
         drawCanvas2D(pos: Vector2, size: Vector2, angle: number, mirror: boolean, drawFunction: Function): void;
-        /** Draw a tile directly onto the layer canvas
+        /** Draw a tile directly onto the layer canvas in world space
          *  @param {Vector2}  pos
-         *  @param {Vector2}  [size=Vector2(1,1)]
+         *  @param {Vector2}  [size=(1,1)]
          *  @param {TileInfo} [tileInfo]
-         *  @param {Color}    [color=Color()]
+         *  @param {Color}    [color=(1,1,1,1)]
          *  @param {Number}   [angle=0]
          *  @param {Boolean}  [mirror=0] */
         drawTile(pos: Vector2, size?: Vector2, tileInfo?: TileInfo, color?: Color, angle?: number, mirror?: boolean): void;
-        /** Draw a rectangle directly onto the layer canvas
+        /** Draw a rectangle directly onto the layer canvas in world space
          *  @param {Vector2} pos
-         *  @param {Vector2} [size=Vector2(1,1)]
-         *  @param {Color}   [color=Color()]
+         *  @param {Vector2} [size=(1,1)]
+         *  @param {Color}   [color=(1,1,1,1)]
          *  @param {Number}  [angle=0] */
         drawRect(pos: Vector2, size?: Vector2, color?: Color, angle?: number): void;
     }
@@ -1812,12 +1852,12 @@ declare module "littlejsengine" {
      * @example
      * // create a particle emitter
      * let pos = vec2(2,3);
-     * let particleEmiter = new ParticleEmitter
+     * let particleEmitter = new ParticleEmitter
      * (
-     *     pos, 0, 1, 0, 500, PI,  // pos, angle, emitSize, emitTime, emitRate, emiteCone
-     *     tile(0, 16),            // tileInfo
-     *     new Color(1,1,1),   new Color(0,0,0),   // colorStartA, colorStartB
-     *     new Color(1,1,1,0), new Color(0,0,0,0), // colorEndA, colorEndB
+     *     pos, 0, 1, 0, 500, PI,      // pos, angle, emitSize, emitTime, emitRate, emiteCone
+     *     tile(0, 16),                // tileInfo
+     *     rgb(1,1,1),   rgb(0,0,0),   // colorStartA, colorStartB
+     *     rgb(1,1,1,0), rgb(0,0,0,0), // colorEndA, colorEndB
      *     2, .2, .2, .1, .05,  // particleTime, sizeStart, sizeEnd, particleSpeed, particleAngleSpeed
      *     .99, 1, 1, PI, .05,  // damping, angleDamping, gravityScale, particleCone, fadeRate,
      *     .5, 1                // randomness, collide, additive, randomColorLinear, renderOrder
@@ -1825,37 +1865,37 @@ declare module "littlejsengine" {
      */
     export class ParticleEmitter extends EngineObject {
         /** Create a particle system with the given settings
-         *  @param {Vector2} position           - World space position of the emitter
-         *  @param {Number}  [angle=0]          - Angle to emit the particles
-         *  @param {Number}  [emitSize=0]       - World space size of the emitter (float for circle diameter, vec2 for rect)
-         *  @param {Number}  [emitTime=0]       - How long to stay alive (0 is forever)
-         *  @param {Number}  [emitRate=100]     - How many particles per second to spawn, does not emit if 0
-         *  @param {Number}  [emitConeAngle=PI] - Local angle to apply velocity to particles from emitter
-         *  @param {TileInfo} [tileInfo]         - Tile info to render particles (undefined is untextured)
-         *  @param {Color}   [colorStartA=Color()] - Color at start of life 1, randomized between start colors
-         *  @param {Color}   [colorStartB=Color()] - Color at start of life 2, randomized between start colors
-         *  @param {Color}   [colorEndA=Color(1,1,1,0)] - Color at end of life 1, randomized between end colors
-         *  @param {Color}   [colorEndB=Color(1,1,1,0)] - Color at end of life 2, randomized between end colors
-         *  @param {Number}  [particleTime=.5]      - How long particles live
-         *  @param {Number}  [sizeStart=.1]         - How big are particles at start
-         *  @param {Number}  [sizeEnd=1]            - How big are particles at end
-         *  @param {Number}  [speed=.1]             - How fast are particles when spawned
-         *  @param {Number}  [angleSpeed=.05]       - How fast are particles rotating
-         *  @param {Number}  [damping=1]            - How much to dampen particle speed
-         *  @param {Number}  [angleDamping=1]       - How much to dampen particle angular speed
-         *  @param {Number}  [gravityScale=0]       - How much does gravity effect particles
-         *  @param {Number}  [particleConeAngle=PI] - Cone for start particle angle
-         *  @param {Number}  [fadeRate=.1]          - How quick to fade in particles at start/end in percent of life
-         *  @param {Number}  [randomness=.2]        - Apply extra randomness percent
-         *  @param {Boolean} [collideTiles=0]       - Do particles collide against tiles
-         *  @param {Boolean} [additive=0]           - Should particles use addtive blend
-         *  @param {Boolean} [randomColorLinear=1]  - Should color be randomized linearly or across each component
-         *  @param {Number}  [renderOrder=0]        - Render order for particles (additive is above other stuff by default)
-         *  @param {Boolean}  [localSpace=0]        - Should it be in local space of emitter (world space is default)
+         *  @param {Vector2} position - World space position of the emitter
+         *  @param {Number} [angle] - Angle to emit the particles
+         *  @param {Number|Vector2}  [emitSize] - World space size of the emitter (float for circle diameter, vec2 for rect)
+         *  @param {Number} [emitTime] - How long to stay alive (0 is forever)
+         *  @param {Number} [emitRate] - How many particles per second to spawn, does not emit if 0
+         *  @param {Number} [emitConeAngle=PI] - Local angle to apply velocity to particles from emitter
+         *  @param {TileInfo} [tileInfo] - Tile info to render particles (undefined is untextured)
+         *  @param {Color} [colorStartA=(1,1,1,1)] - Color at start of life 1, randomized between start colors
+         *  @param {Color} [colorStartB=(1,1,1,1)] - Color at start of life 2, randomized between start colors
+         *  @param {Color} [colorEndA=(1,1,1,0)] - Color at end of life 1, randomized between end colors
+         *  @param {Color} [colorEndB=(1,1,1,0)] - Color at end of life 2, randomized between end colors
+         *  @param {Number} [particleTime]      - How long particles live
+         *  @param {Number} [sizeStart]         - How big are particles at start
+         *  @param {Number} [sizeEnd]           - How big are particles at end
+         *  @param {Number} [speed]             - How fast are particles when spawned
+         *  @param {Number} [angleSpeed]        - How fast are particles rotating
+         *  @param {Number} [damping]           - How much to dampen particle speed
+         *  @param {Number} [angleDamping]      - How much to dampen particle angular speed
+         *  @param {Number} [gravityScale]      - How much gravity effect particles
+         *  @param {Number} [particleConeAngle] - Cone for start particle angle
+         *  @param {Number} [fadeRate]          - How quick to fade particles at start/end in percent of life
+         *  @param {Number} [randomness]    - Apply extra randomness percent
+         *  @param {Boolean} [collideTiles] - Do particles collide against tiles
+         *  @param {Boolean} [additive]     - Should particles use addtive blend
+         *  @param {Boolean} [randomColorLinear] - Should color be randomized linearly or across each component
+         *  @param {Number} [renderOrder] - Render order for particles (additive is above other stuff by default)
+         *  @param {Boolean}  [localSpace] - Should it be in local space of emitter (world space is default)
          */
-        constructor(pos: any, angle?: number, emitSize?: number, emitTime?: number, emitRate?: number, emitConeAngle?: number, tileInfo?: TileInfo, colorStartA?: Color, colorStartB?: Color, colorEndA?: Color, colorEndB?: Color, particleTime?: number, sizeStart?: number, sizeEnd?: number, speed?: number, angleSpeed?: number, damping?: number, angleDamping?: number, gravityScale?: number, particleConeAngle?: number, fadeRate?: number, randomness?: number, collideTiles?: boolean, additive?: boolean, randomColorLinear?: boolean, renderOrder?: number, localSpace?: boolean);
-        /** @property {Number} - World space size of the emitter (float for circle diameter, vec2 for rect) */
-        emitSize: number;
+        constructor(position: Vector2, angle?: number, emitSize?: number | Vector2, emitTime?: number, emitRate?: number, emitConeAngle?: number, tileInfo?: TileInfo, colorStartA?: Color, colorStartB?: Color, colorEndA?: Color, colorEndB?: Color, particleTime?: number, sizeStart?: number, sizeEnd?: number, speed?: number, angleSpeed?: number, damping?: number, angleDamping?: number, gravityScale?: number, particleConeAngle?: number, fadeRate?: number, randomness?: number, collideTiles?: boolean, additive?: boolean, randomColorLinear?: boolean, renderOrder?: number, localSpace?: boolean);
+        /** @property {Number|Vector2} - World space size of the emitter (float for circle diameter, vec2 for rect) */
+        emitSize: number | Vector2;
         /** @property {Number} - How long to stay alive (0 is forever) */
         emitTime: number;
         /** @property {Number} - How many particles per second to spawn, does not emit if 0 */
@@ -1888,12 +1928,17 @@ declare module "littlejsengine" {
         fadeRate: number;
         /** @property {Number} - Apply extra randomness percent */
         randomness: number;
-        /** @property {Number} - Should particles use addtive blend */
+        /** @property {Boolean} - Should particles use addtive blend */
         additive: boolean;
         /** @property {Boolean} - Should it be in local space of emitter */
         localSpace: boolean;
-        /** @property {Number} - If set the partile is drawn as a trail, stretched in the drection of velocity */
+        /** @property {Number} - If non zero the partile is drawn as a trail, stretched in the drection of velocity */
         trailScale: number;
+        /** @property {Function}   - Callback when particle is destroyed */
+        particleDestroyCallback: any;
+        /** @property {Function}   - Callback when particle is created */
+        particleCreateCallback: any;
+        /** @property {Number} - Track particle emit time */
         emitTimeBuffer: number;
         /** Spawn one particle
          *  @return {Particle} */
@@ -1905,12 +1950,42 @@ declare module "littlejsengine" {
      */
     export class Particle extends EngineObject {
         /**
-         * Create a particle with the given settings
-         * @param {Vector2} position                   - World space position of the particle
-         * @param {TileInfo} [tileInfo]                - Tile info to render particles (undefined is untextured)
-         * @param {Number}  [angle=0]                  - Angle to rotate the particle
+         * Create a particle with the given shis.colorStart = undefined;ettings
+         * @param {Vector2}  position     - World space position of the particle
+         * @param {TileInfo} [tileInfo]   - Tile info to render particles
+         * @param {Number}   [angle]      - Angle to rotate the particle
+         * @param {Color}    [colorStart] - Color at start of life
+         * @param {Color}    [colorEnd]   - Color at end of life
+         * @param {Number}   [lifeTime]   - How long to live for
+         * @param {Number}   [sizeStart]  - Angle to rotate the particle
+         * @param {Number}   [sizeEnd]    - Angle to rotate the particle
+         * @param {Number}   [fadeRate]   - Angle to rotate the particle
+         * @param {Boolean}  [additive]   - Angle to rotate the particle
+         * @param {Number}   [trailScale] - If a trail, how long to make it
+         * @param {ParticleEmitter} [localSpaceEmitter] - Parent emitter if local space
+         * @param {Function}  [destroyCallback] - Called when particle dies
          */
-        constructor(pos: any, tileInfo?: TileInfo, angle?: number);
+        constructor(position: Vector2, tileInfo?: TileInfo, angle?: number, colorStart?: Color, colorEnd?: Color, lifeTime?: number, sizeStart?: number, sizeEnd?: number, fadeRate?: number, additive?: boolean, trailScale?: number, localSpaceEmitter?: ParticleEmitter, destroyCallback?: Function);
+        /** @property {Color} - Color at start of life */
+        colorStart: Color;
+        /** @property {Color} - Calculated change in color */
+        colorEndDelta: Color;
+        /** @property {Number} - How long to live for */
+        lifeTime: number;
+        /** @property {Number} - Size at start of life */
+        sizeStart: number;
+        /** @property {Number} - Calculated change in size */
+        sizeEndDelta: number;
+        /** @property {Number} - How quick to fade in/out */
+        fadeRate: number;
+        /** @property {Boolean} - Is it additive */
+        additive: boolean;
+        /** @property {Number} - If a trail, how long to make it */
+        trailScale: number;
+        /** @property {ParticleEmitter} - Parent emitter if local space */
+        localSpaceEmitter: ParticleEmitter;
+        /** @property {Function} - Called when particle dies */
+        destroyCallback: Function;
     }
     /**
      * LittleJS Medal System
@@ -1925,7 +2000,7 @@ declare module "littlejsengine" {
     export const medals: any[];
     /** Set to stop medals from being unlockable (like if cheats are enabled)
      *  @type {Boolean}
-     *  @default 0
+     *  @default
      *  @memberof Settings */
     export let medalsPreventUnlock: boolean;
     /** Initialize medals with a save name used for storage
@@ -1957,7 +2032,7 @@ declare module "littlejsengine" {
          *  @param {Number} id            - The unique identifier of the medal
          *  @param {String} name          - Name of the medal
          *  @param {String} [description] - Description of the medal
-         *  @param {String} [icon='🏆']  - Icon for the medal
+         *  @param {String} [icon]        - Icon for the medal
          *  @param {String} [src]         - Image location for the medal
          */
         constructor(id: number, name: string, description?: string, icon?: string, src?: string);
@@ -1970,15 +2045,14 @@ declare module "littlejsengine" {
         unlock(): void;
         unlocked: number;
         /** Render a medal
-         *  @param {Number} [hidePercent=0] - How much to slide the medal off screen
+         *  @param {Number} [hidePercent] - How much to slide the medal off screen
          */
         render(hidePercent?: number): void;
         /** Render the icon for a medal
-         *  @param {Number} x - Screen space X position
-         *  @param {Number} y - Screen space Y position
+         *  @param {Vector2} pos - Screen space position
          *  @param {Number} [size=medalDisplayIconSize] - Screen space size
          */
-        renderIcon(pos: any, size?: number): void;
+        renderIcon(pos: Vector2, size?: number): void;
         storageKey(): string;
     }
     /**
@@ -2009,21 +2083,21 @@ declare module "littlejsengine" {
          * @param {Number} value - The score value */
         postScore(id: number, value: number): any;
         /** Get scores from a scoreboard
-         * @param {Number} id         - The scoreboard id
-         * @param {String} [user=0]   - A user's id or name
-         * @param {Number} [social=0] - If true, only social scores will be loaded
-         * @param {Number} [skip=0]   - Number of scores to skip before start
-         * @param {Number} [limit=10] - Number of scores to include in the list
-         * @return {Object}           - The response JSON object
+         * @param {Number} id       - The scoreboard id
+         * @param {String} [user]   - A user's id or name
+         * @param {Number} [social] - If true, only social scores will be loaded
+         * @param {Number} [skip]   - Number of scores to skip before start
+         * @param {Number} [limit]  - Number of scores to include in the list
+         * @return {Object}         - The response JSON object
          */
         getScores(id: number, user?: string, social?: number, skip?: number, limit?: number): any;
         /** Send message to log a view */
         logView(): any;
         /** Send a message to call a component of the Newgrounds API
-         * @param {String}  component      - Name of the component
-         * @param {Object}  [parameters=0] - Parameters to use for call
-         * @param {Boolean} [async=0]      - If true, don't wait for response before continuing (avoid stall)
-         * @return {Object}                - The response JSON object
+         * @param {String}  component    - Name of the component
+         * @param {Object}  [parameters] - Parameters to use for call
+         * @param {Boolean} [async]      - If true, don't wait for response before continuing
+         * @return {Object}              - The response JSON object
          */
         call(component: string, parameters?: any, async?: boolean): any;
     }
